@@ -2,8 +2,10 @@ var mongoose=require("mongoose");
 var userSchema=new mongoose.Schema({
 	fullName: String,
     userName: String,
-    email: String,
-    // image:String,
+    email: {type: String,unique: true},
+    verified: Boolean,
+    random: String,
+    image:String,
     salt: String,
     hash: String
 });

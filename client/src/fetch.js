@@ -1,3 +1,5 @@
+import axios from 'axios';
+
 function postData(url = '', data = {}) {
     // Default options are marked with *
     return fetch(url, {
@@ -6,7 +8,10 @@ function postData(url = '', data = {}) {
       cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
       credentials: 'same-origin', // include, *same-origin, omit
       headers: {
-        'Content-Type': 'application/json'
+        // 'Accept': '*/*',
+        // 'Content-Type': 'multipart/form-data'
+        'Content-Type': undefined
+        // 'Content-Type': 'application/json'
         // 'Content-Type': 'application/x-www-form-urlencoded',
       },
       redirect: 'follow', // manual, *follow, error
@@ -36,4 +41,26 @@ function getData(url=''){
     // });
 }
 
-export {postData,getData};
+function postDataAxios(url,data){
+  return axios.post(url,data,{
+    withCredentials: true
+    // headers:{
+    //   'Content-Type': 'multipart/form-data'
+    // }
+  })
+  .then((response)=>{
+    return response.data;
+  })
+}
+
+function getDataAxios(url){
+  return axios.get(url,{
+    withCredentials: true
+  })
+  .then((response)=>{
+    return response.data;
+  })
+}
+
+
+export {postData,getData,postDataAxios,getDataAxios};

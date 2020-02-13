@@ -1,18 +1,23 @@
 import React,{Component} from 'react';
-import { postData } from '../fetch';
+import { postDataAxios } from '../fetch';
 
 class CreatePost extends Component{
     constructor(props){
         super(props);
         this.state={
-            text:''
+            text:'',
+            myFile:''
         }
         this.onSubmit=this.onSubmit.bind(this);
         this.onChange=this.onChange.bind(this);
+        this.onChangeFile=this.onChangeFile.bind(this);
     }
     onSubmit(e){
         e.preventDefault();
-        postData('/post/',this.state)
+        const fd=new FormData();
+        fd.append('text',this.state.text);
+        fd.append('myFile',this.state.myFile,this.state.myFile.name);
+        postDataAxios('/post/',fd)
         .then(data=>{
             console.log(data);
             this.props.history.push('/');
@@ -24,6 +29,11 @@ class CreatePost extends Component{
     onChange(e){
         this.setState({
             text: e.target.value
+        })
+    }
+    onChangeFile(e){
+        this.setState({
+            myFile:e.target.files[0]
         })
     }
     render(){
@@ -45,6 +55,7 @@ class CreatePost extends Component{
                                 onChange={this.onChange}
                             ></textarea>
                         </div>
+                        <input type="file" name="myFile" onChange={this.onChangeFile}/>
                         <button type="submit" className="btn btn-info btn-block">Submit</button>
                     </form>
                     </div>

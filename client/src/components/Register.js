@@ -1,5 +1,5 @@
 import React,{Component} from 'react';
-import {postData} from '../fetch';
+import { postDataAxios} from '../fetch';
 class Register extends Component {
   constructor(props){
     super(props);
@@ -11,6 +11,7 @@ class Register extends Component {
       error:''
     };
     this.onChange = this.onChange.bind(this);
+    this.onChangeFile = this.onChangeFile.bind(this);
     this.onSubmit = this.onSubmit.bind(this);
   }
   onChange(e){
@@ -18,29 +19,31 @@ class Register extends Component {
       [e.target.name]:e.target.value
     })
   }
+  onChangeFile(e){
+    // this.setState({
+    //   profile: e.target.files[0]
+    // })
+  }
   onSubmit(e){
     e.preventDefault();
-    postData('/user/register', this.state)
+    const fd=new FormData();
+    fd.append('email',this.state.email);
+    fd.append('password',this.state.password);
+    fd.append('userName',this.state.userName);
+    fd.append('fullName',this.state.fullName);
+    // fd.append('profile',this.state.profile,this.state.profile.name);
+    postDataAxios('/user/register', this.state)
     .then((data) => {
-      console.log(data); // JSON data parsed by `response.json()` call
+      console.log(data); 
       this.props.changeLinks(true);
-      this.props.history.push('/');
+      this.props.history.push('/verify');
+    })
+    .catch(err=>{
+      this.setState({error: err.response.data});
     });
   }
 
   render(){
-    // const options = [
-    //   {label:'Male',value:'Male'},
-    //   {label:'Female',value:'Female'},
-    //   {label:'Others',value:'Others'},
-    // ];
-    // const options2 = [
-    //   {label:'General',value:'General'},
-    //   {label:'OBC',value:'OBC'},
-    //   {label:'SC',value:'SC'},
-    //   {label:'ST',value:'ST'},
-
-    // ];
     const {error} = this.state;
     return(
         <div>
@@ -48,6 +51,7 @@ class Register extends Component {
           <hr/>
           <div className="row">
             <div className="col-md-4">
+              <span className="text-danger">{error}</span>
               <form onSubmit={this.onSubmit} className="form-group">
                 <div className="form-group">
                   <label htmlFor="email" className="control-label"></label>
@@ -69,9 +73,7 @@ class Register extends Component {
                   <input name="fullName" type="text" placeholder="full name" onChange={this.onChange} value={this.state.fullName} className="form-control" />
                   <span className="text-danger">{error.fullName}</span>
                 </div>
-                {/* <InputFieldTextGroup name="Topic" placeholder="enter topic" value={this.state.Topic}  error={error.Topic} />
-                <InputFieldTextGroup name="publisherName" placeholder="enter publisher name" value={this.state.publisherName} onChange={this.onChange} error={error.publisherName} />
-                <InputFieldTextGroup type="date" name="date" placeholder="enter starting date" value={this.state.date} onChange={this.onChange} error={error.date} /> */}
+                {/* <input type='file' name="profile" onChange={this.onChangeFile}/> */}
                 <button type="submit" className="btn btn-info btn-block">Submit</button>
               </form>
             </div>

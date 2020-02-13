@@ -1,7 +1,7 @@
 import React,{Component} from 'react';
-import {getData} from '../fetch';
+import { getDataAxios} from '../fetch';
 import Post from './Post';
-import CreatePost from './CreatePost';
+import {Link} from 'react-router-dom';
 class Feed extends Component{
     constructor(props){
         super(props);
@@ -10,23 +10,37 @@ class Feed extends Component{
         }
     }
     componentDidMount(){
-        getData('/post/')
+        let url='/post/';
+        if(this.props.profile)
+            url+='?userId='+this.props.profile._id
+        getDataAxios(url)
         .then((data)=>{
-            console.log(data)
+            // console.log(data)
             this.setState({posts:data.posts});
         })
         .catch((err)=>{
             console.log(err);
+            if(err.response.data==='not logged in')
+                if(!this.props.profile)
+                    this.props.history.push('/login');
         })
     }
-    onClick(){
-        this.props.history.push('/create');
-    }
+    // onClick(){
+    //     this.props.history.push('/create');
+    // }
     render(){
+        // onClick={this.onClick.bind(this)}
         const content=this.state.posts.map(post=> <Post post={post}/> );
+        let createLink=<Link to="/create" className="btn btn-info btn-block">Create post</Link>
+        if(this.props.profile){
+            if(!(this.props.profile.owner))
+                createLink=''
+        }
         return(
             <div>
-                <button onClick={this.onClick.bind(this)} className="btn btn-info btn-block">Create post</button>
+                {createLink}
+                <hr/>
+                <br/>
                 {content}
             </div>
         );

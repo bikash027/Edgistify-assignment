@@ -1,5 +1,5 @@
 import React,{Component} from 'react'
-import {postData} from '../fetch';
+import { postDataAxios} from '../fetch';
 class Login extends Component {
   constructor(props){
     super(props);
@@ -18,27 +18,18 @@ class Login extends Component {
   }
   onSubmit(e){
     e.preventDefault();
-    postData('/user/login', this.state)
+    postDataAxios('/user/login', this.state)
     .then((data) => {
       console.log(data); 
       this.props.changeLinks(true);
       this.props.history.push('/');
+    })
+    .catch(err=>{
+      this.setState({error: err.response.data});
     });
   }
 
   render(){
-    const options = [
-      {label:'Male',value:'Male'},
-      {label:'Female',value:'Female'},
-      {label:'Others',value:'Others'},
-    ];
-    const options2 = [
-      {label:'General',value:'General'},
-      {label:'OBC',value:'OBC'},
-      {label:'SC',value:'SC'},
-      {label:'ST',value:'ST'},
-
-    ];
     const {error} = this.state;
     return(
         <div>
@@ -46,10 +37,11 @@ class Login extends Component {
           <hr/>
           <div className="row">
             <div className="col-md-4">
+              <span className="text-danger">{error}</span>
               <form onSubmit={this.onSubmit} className="form-group">
                 <div className="form-group">
                   <label htmlFor="email" className="control-label"></label>
-                  <input name="email" type="text" placeholder="email" onChange={this.onChange} value={this.state.email} className="form-control" />
+                  <input name="email" type="text" placeholder="email" onChange={this.onChange}  className="form-control" />
                   <span className="text-danger">{error.email}</span>
                 </div>
                 <div className="form-group">

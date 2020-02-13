@@ -1,16 +1,44 @@
 const express=require('express');
 const router=express.Router();
 const Post=require('../models/Post');
+const User=require('../models/User');
+const multer = require("multer");
+const path=require('path');
+
+const storage=multer.diskStorage({
+	destination: (process.env.NODE_ENV==='development')?'client/public/uploads':'client/build/uploads',
+	filename: function(req,file,cb){
+		cb(null,file.fieldname + '_' + Date.now() + path.extname(file.originalname));
+	}
+});
+
+//2
+const upload = multer({
+	storage: storage
+ }).single('myFile');
+
+function emailVerified(req,res,next){
+    User.findOne({_id: req.session.userId})
+    .then(user=>{
+        if(user.verified)
+            next();
+        else
+            res.status(500).send("access denied");
+    })
+}
 
 router.use((req,res,next)=>{
     if(req.session.userId)
         next();
     else
-        res.status(500).json({error:"not logged in"});
+        res.status(500).send("not logged in");
 });
 
 router.get('/',(req,res)=>{
-    Post.find({isComment: false},null,
+    const filter={contentType: 'post'};
+    if(req.query.userId)
+        filter.User=req.query.userId;
+    Post.find(filter,null,
         {
             skip:0, // Starting Row
             limit:10, // Ending Row
@@ -30,7 +58,8 @@ router.get('/',(req,res)=>{
                 text: post.text,
                 userName: post.User.userName,
                 userId: post.User._id,
-                time_added: post.time_added
+                time_added: post.time_added,
+                contentType: post.contentType
             };
             // console.log(_post);
             return _post;
@@ -40,28 +69,37 @@ router.get('/',(req,res)=>{
     })
     .catch((err)=>{
         console.log(err);
-        res.status(500).json({error: "could not retrieve posts from db"});
+        res.status(500).send("could not retrieve posts from db");
     })
 })
 
-router.post('/',(req,res)=>{
-    Post.create({
-        User: req.session.userId,
-        text: req.body.text,
-        time_added: Date.now(),
-        isComment: false
-    })
-    .then((post)=>{
-        res.status(200).json({message: "post created successfully"});
-    })
-    .catch((err)=>{
-        console.log(err);
-        res.status(500).json({error: "could not save post to db"});
+router.post('/',emailVerified,(req,res)=>{
+    upload(req,res,(err)=>{
+        if(err){
+            console.log(err);
+            res.status(500).send("could not upload image");
+        }
+        else{
+            Post.create({
+                User: req.session.userId,
+                text: req.body.text,
+                time_added: Date.now(),
+                contentType: 'post',
+                image: req.file.filename
+            })
+            .then((post)=>{
+                res.status(200).json({message: "post created successfully"});
+            })
+            .catch((err)=>{
+                console.log(err);
+                res.status(500).send("could not save post to db");
+            })
+        }
     })
 });
 
 router.get('/comments/:id',(req,res)=>{
-    Post.find({isComment: true, Post: req.params.id},null,
+    Post.find({contentType:{$in:['comment','reply']}, Post: req.params.id},null,
         {
             skip:0,
             limit:10,
@@ -79,31 +117,52 @@ router.get('/comments/:id',(req,res)=>{
                 text: comment.text,
                 userName: comment.User.userName,
                 userId: comment.User._id,
-                time_added: comment.time_added
+                time_added: comment.time_added,
+                contentType: comment.contentType
             }
         })
         res.status(200).json({comments});
     })
     .catch((err)=>{
-        res.status(500).json({error: "could not fetch comments"});
+        res.status(500).send('could not fetch comments');
     })
 })
 
-router.post('/comments/:id',(req,res)=>{
-    Post.create({
-        isComment: true,
-        text: req.body.text,
-        User: req.session.userId,
-        Post: req.params.id,
-        time_added: Date.now()
+router.post('/comments/:id',emailVerified,(req,res)=>{
+    Post.findOne({_id: req.params.id})
+    .then(post=>{
+        let content='';
+        if(post.contentType==='comment')
+            content='reply';
+        else if(post.contentType==='post')
+            content='comment';
+        else
+            throw new Error("cannot reply to a reply");
+        return Post.create({
+            contentType: content,
+            text: req.body.text,
+            User: req.session.userId,
+            Post: post._id,
+            time_added: Date.now()
+        })
     })
     .then((comment)=>{
         res.status(200).json({message:"comment added successfully"});
     })
     .catch((err)=>{
         console.log(err);
-        res.status(500).json({error: "could not save comment in db"});
+        res.status(500).send(err.message);
     });
 });
+
+router.get('/count/:id',(req,res)=>{
+    Post.countDocuments({Post: req.params.id})
+    .then(count=>{
+        res.status(200).json({count});
+    })
+    .catch(err=>{
+        res.status(500).send(err.message);
+    })
+})
 
 module.exports=router;

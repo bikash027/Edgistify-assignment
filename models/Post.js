@@ -7,7 +7,7 @@ var postSchema=new mongoose.Schema({
     },
     text: String,
     time_added: Date,
-    isComment: Boolean,
+    contentType: String,
     Post:{
         type: mongoose.Schema.Types.ObjectId,
         ref: "Post"

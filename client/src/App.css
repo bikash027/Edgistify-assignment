@@ -36,15 +36,28 @@
     transform: rotate(360deg);
   }
 }
-
+body{
+  background-color: #9ea4ad;
+}
 .footer {
-  position: absolute;
-  bottom: 0;
+  background-color: white;  
+  bottom: 0vh;
   width: 100%;
   white-space: nowrap;
   line-height: 60px; /* Vertically center the text there */
+  /* height: (100%-60px); */
 }
 .custom{
   border-color: transparent;
   border-left-color: gray;
+  max-width: 500px;
+  margin:0 auto;
+  background-color: #d3d9e3;
+}
+.custom p{
+  padding: 20px;
+  background-color: white;
+}
+.AppJsContainer{
+  min-height: 85vh;
 }

@@ -1,6 +1,5 @@
 import React,{Component} from 'react';
-import Links from './Links';
-import {Link} from 'react-router-dom';
+
 class Footer extends Component{
     render(){
         return(

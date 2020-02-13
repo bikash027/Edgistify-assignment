@@ -1,15 +1,11 @@
 import React,{Component} from 'react';
 // import Links from './Links';
 import {Link} from 'react-router-dom';
-import {postData} from '../fetch';
+import {postDataAxios} from '../fetch';
 class Nav extends Component{
-    constructor(props){
-        super(props);
-
-    }
     onClick(navObject){
         console.log(navObject.props);
-        postData('/user/logout')
+        postDataAxios('/user/logout')
         .then((data)=>{
             console.log("logged out");
             navObject.props.changeLinks(false);
@@ -43,7 +39,7 @@ class Nav extends Component{
             <header>
                 <nav className="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
                     <div className="container">
-                        <Link className="navbar-brand" to="#">Home</Link>
+                        <Link className="navbar-brand" to="/">Home</Link>
                         <button className="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                                 aria-expanded="false" aria-label="Toggle navigation">
                             <span className="navbar-toggler-icon"></span>
