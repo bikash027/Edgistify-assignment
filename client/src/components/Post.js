@@ -2,7 +2,8 @@ import React,{Component} from 'react';
 import Comments from './Comments';
 import { getDataAxios} from '../fetch';
 import AddComment from './AddComment';
-import {Link} from 'react-router-dom';
+import User from './User';
+import { Link } from 'react-router-dom';
 class Post extends Component{
     constructor(props){
         super(props);
@@ -55,21 +56,36 @@ class Post extends Component{
             commentsOrReplies='Replies';
         else if(post.contentType==='post')
             commentsOrReplies='Comments';
+
+        const showHide=(this.state.commentsListed)?'Hide': 'Show';
+
         const commentsLink=(commentsOrReplies!=='')?
-            <span onClick={this.onClickComments.bind(this)} className="card-link">{commentsOrReplies}({this.state.commentCount})</span>:
+            <Link><small onClick={this.onClickComments.bind(this)} className="card-link text-dark">{showHide} {commentsOrReplies}({this.state.commentCount})</small></Link>:
             '';
+
         const addComment=(commentsOrReplies!=='')?
             <AddComment getComments={this.getComments} post={post}/>:
             '';
+
+        const image=(post.image)?
+            <img className="card-img" src={`/uploads/${post.image}`} />
+            : '';
+
+        const commentList=(this.state.comments.length!==0)?
+                            <div className="card-body">
+                                <h6 className="text-muted">{commentsOrReplies}</h6>
+                                <Comments comments={this.state.comments} />
+                            </div>:'';
+
         const date=new Date(post.time_added);
 
-        
         return(
             <div className="custom card">
                 <div className="card-body">
-                    <h5 className="card-title"><Link to={`/profile/${post.userId}`} >{post.userName}</Link></h5>
-                    <h6 className="card-subtitle mb-2 text-muted">{date.getDate()}/{date.getMonth()+1}/{date.getFullYear()}</h6>
+                    <User user={post.User}/>
+                    <small className="card-subtitle mb-2 text-muted">{date.getDate()}/{date.getMonth()+1}/{date.getFullYear()}</small>
                     <hr/>
+                    {image}
                     <p className="card-text">{post.text}</p>
                     <hr/>
                     <div className="row">
@@ -79,9 +95,8 @@ class Post extends Component{
                         {addComment}
                     </div>
                     <hr/>
-                    {(this.state.comments.length!==0)?<h6 className="text-muted">{commentsOrReplies}</h6>:''}
-                    <Comments comments={this.state.comments} />
                 </div>
+                {commentList}
             </div>
         );
     }

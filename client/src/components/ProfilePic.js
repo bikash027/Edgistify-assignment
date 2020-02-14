@@ -27,7 +27,8 @@ class ProfilePic extends Component{
         const style={
             backgroundColor: 'gray',
             minHeight: '200px',
-            padding: '20px'
+            padding: '20px',
+            marginBottom: '20px'
         }
         const profile=this.props.profile;
         let content='';

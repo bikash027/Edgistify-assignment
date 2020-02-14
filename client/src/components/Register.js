@@ -26,12 +26,6 @@ class Register extends Component {
   }
   onSubmit(e){
     e.preventDefault();
-    const fd=new FormData();
-    fd.append('email',this.state.email);
-    fd.append('password',this.state.password);
-    fd.append('userName',this.state.userName);
-    fd.append('fullName',this.state.fullName);
-    // fd.append('profile',this.state.profile,this.state.profile.name);
     postDataAxios('/user/register', this.state)
     .then((data) => {
       console.log(data); 
@@ -47,7 +41,7 @@ class Register extends Component {
     const {error} = this.state;
     return(
         <div>
-          <h1>Register</h1>
+          <h1 className="color">Register</h1>
           <hr/>
           <div className="row">
             <div className="col-md-4">

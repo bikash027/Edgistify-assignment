@@ -50,16 +50,19 @@ router.get('/',(req,res)=>{
     .populate('User')
     .exec()
     .then((posts)=>{
-        
         const _posts=posts.map(post=>{
             // console.log(post);
             const _post={
                 _id: post._id,
-                text: post.text,
-                userName: post.User.userName,
-                userId: post.User._id,
-                time_added: post.time_added,
-                contentType: post.contentType
+                text:post.text,
+                time_added:post.time_added,
+                contentType:post.contentType,
+                image:post.image,
+                User:{
+                    userName: post.User.userName,
+                    _id: post.User._id,
+                    image: post.User.image
+                }
             };
             // console.log(_post);
             return _post;
@@ -76,16 +79,16 @@ router.get('/',(req,res)=>{
 router.post('/',emailVerified,(req,res)=>{
     upload(req,res,(err)=>{
         if(err){
-            console.log(err);
-            res.status(500).send("could not upload image");
+            res.status(500).send("image problem");
         }
         else{
+            console.log(req.body);
             Post.create({
                 User: req.session.userId,
                 text: req.body.text,
                 time_added: Date.now(),
-                contentType: 'post',
-                image: req.file.filename
+                image: (req.file)?req.file.filename:undefined,
+                contentType: 'post'
             })
             .then((post)=>{
                 res.status(200).json({message: "post created successfully"});
@@ -115,10 +118,13 @@ router.get('/comments/:id',(req,res)=>{
             return {
                 _id: comment._id,
                 text: comment.text,
-                userName: comment.User.userName,
-                userId: comment.User._id,
                 time_added: comment.time_added,
-                contentType: comment.contentType
+                contentType: comment.contentType,
+                User:{
+                    userName: comment.User.userName,
+                    _id: comment.User._id,
+                    image: comment.User.image
+                }
             }
         })
         res.status(200).json({comments});

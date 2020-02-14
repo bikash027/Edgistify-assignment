@@ -6,7 +6,8 @@ class CreatePost extends Component{
         super(props);
         this.state={
             text:'',
-            myFile:''
+            myFile:'',
+            error: ''
         }
         this.onSubmit=this.onSubmit.bind(this);
         this.onChange=this.onChange.bind(this);
@@ -16,14 +17,15 @@ class CreatePost extends Component{
         e.preventDefault();
         const fd=new FormData();
         fd.append('text',this.state.text);
-        fd.append('myFile',this.state.myFile,this.state.myFile.name);
+        if(this.state.myFile!=='')
+            fd.append('myFile',this.state.myFile,this.state.myFile.name);
         postDataAxios('/post/',fd)
         .then(data=>{
             console.log(data);
             this.props.history.push('/');
         })
         .catch(err=>{
-            console.log(err);
+            this.setState({error: err.response.data});
         })
     }
     onChange(e){
@@ -39,11 +41,12 @@ class CreatePost extends Component{
     render(){
         return(
             <div>
-                <h1>Create post</h1>
+                <h1 className='color'>Create post</h1>
                 <hr/>
                 <div className="row">
                     <div className="col-md-4">
                     <form onSubmit={this.onSubmit} className="form-group">
+                        <span className="text-danger">{this.state.error}</span>
                         <div class="form-group">
                             {/* <label for="Textarea1">Example textarea</label> */}
                             <textarea 
@@ -55,7 +58,8 @@ class CreatePost extends Component{
                                 onChange={this.onChange}
                             ></textarea>
                         </div>
-                        <input type="file" name="myFile" onChange={this.onChangeFile}/>
+                        <label htmlFor="profile" className="color control-label">Add an image:</label>
+                        <input type="file" name="myFile" className='color' onChange={this.onChangeFile}/>
                         <button type="submit" className="btn btn-info btn-block">Submit</button>
                     </form>
                     </div>

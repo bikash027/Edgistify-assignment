@@ -30,7 +30,7 @@ class Feed extends Component{
     // }
     render(){
         // onClick={this.onClick.bind(this)}
-        const content=this.state.posts.map(post=> <Post post={post}/> );
+        const content=this.state.posts.map(post=> <Post key={post._id} post={post}/> );
         let createLink=<Link to="/create" className="btn btn-info btn-block">Create post</Link>
         if(this.props.profile){
             if(!(this.props.profile.owner))
@@ -40,7 +40,6 @@ class Feed extends Component{
             <div>
                 {createLink}
                 <hr/>
-                <br/>
                 {content}
             </div>
         );

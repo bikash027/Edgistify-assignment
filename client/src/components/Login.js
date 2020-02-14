@@ -33,7 +33,7 @@ class Login extends Component {
     const {error} = this.state;
     return(
         <div>
-          <h1>Login</h1>
+          <h1 className='color'>Login</h1>
           <hr/>
           <div className="row">
             <div className="col-md-4">
@@ -49,9 +49,6 @@ class Login extends Component {
                   <input name="password" type="password" placeholder="password" onChange={this.onChange} value={this.state.password} className="form-control" />
                   <span className="text-danger">{error.password}</span>
                 </div>
-                {/* <InputFieldTextGroup name="Topic" placeholder="enter topic" value={this.state.Topic}  error={error.Topic} />
-                <InputFieldTextGroup name="publisherName" placeholder="enter publisher name" value={this.state.publisherName} onChange={this.onChange} error={error.publisherName} />
-                <InputFieldTextGroup type="date" name="date" placeholder="enter starting date" value={this.state.date} onChange={this.onChange} error={error.date} /> */}
                 <button type="submit" className="btn btn-info btn-block">Submit</button>
               </form>
             </div>

@@ -4,9 +4,10 @@ const User=require('../models/User');
 const router=express.Router();
 const Post=require('../models/Post');
 const multer=require('multer');
+const Jimp=require('jimp');
 const path=require('path');
 const crypto=require('crypto');
-const sendMail=require('../mail');
+const sendMail=require('../mail2');
 
 const storage=multer.diskStorage({
 	destination: (process.env.NODE_ENV==='development')?'client/public/uploads':'client/build/uploads',
@@ -62,8 +63,8 @@ router.post('/register',(req,res,next)=>{
 				if(user){
 					req.session.userId=user._id;
 					sendMail(user.email,user.random)
-					.then((result)=>{
-						console.log(result);
+					.then((info)=>{
+						console.log(info.response);
 						res.status(200).json({message:"successfully logged in"});
 					})
 					.catch(err=>{
@@ -140,13 +141,20 @@ router.post('/image/:id',loginRequired,(req,res)=>{
 			upload(req,res,(err)=>{
 				if(err){
 					console.log(err);
-					res.status(500).json({err});
+					res.status(500).send(err.message);
 				}
 				else{
+					let imgPath=(process.env.NODE_ENV==='production')?'./client/build/uploads/'
+									:'./client/public/uploads/';
 					user.image=req.file.filename;
 					user.save()
 					.then(()=>{
-						res.status(200).json({message: 'image successfully added'});
+						return Jimp.read(`${imgPath}${req.file.filename}`)
+						// res.status(200).json({message: 'image successfully added'});
+					})
+					.then(image=>{
+						image.resize(75,Jimp.AUTO)
+						.write(`${imgPath}minified-${req.file.filename}`)
 					})
 					.catch(err=>{
 						console.log(err);
