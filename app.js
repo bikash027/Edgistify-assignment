@@ -31,6 +31,9 @@ if (process.env.NODE_ENV === 'production') {
 }
 
 seedData()
+.then(errPost=>{
+    console.log('database seeded with data');
+})
 .catch(err=>{
     console.log(err.message);
 })

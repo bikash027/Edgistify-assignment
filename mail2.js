@@ -5,7 +5,7 @@ var transporter = nodemailer.createTransport(smtpTransport({
   service: "SendinBlue",
   host: 'smtp-relay.sendinblue.com',
   port:587,
-  proxy: 'http://172.16.199.40:8080',
+  // proxy: 'http://172.16.199.40:8080',
   auth: {
     user: 'singhab288@gmail.com',
     // pass: 'd8RQCrH7s6SBFVcO',

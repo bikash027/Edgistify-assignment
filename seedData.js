@@ -37,6 +37,7 @@ function seedData(){
                     userName: "john",
                     fullName: "John Krasinski",
                     email: "john@john.com",
+                    image: "john.jpg",
                     salt: "RN5qQgFQFlsWr7Wg3F09EMs5GghtG9J3QFUaCTj8/TwljJhC4kLE8tyeL/yiUR7L4Pfl1Ln09cNir7GMO5CVlg==",
                     hash: "pTdQ6PTVpuoa/xLHcxgmkHPmUpp7EOWZXfiRAU8xbumdAL+jgGKfaMajuRKmcnr0M+aIspBKRgpVjdBaD3qSAH0hjGwuFLGLLwFRpNk1ZYjObYm3q+ARgH+CJZiT8Rdj7AsAqRPbfzqTvTJtb0G1f3YkvCNSrjppRe6qIsxpboc=",
                     verified: true
@@ -64,7 +65,7 @@ function seedData(){
             },
             {
                 text: "You have to see the Deadpool movies. All of them.",
-                User: users[0]._id,
+                User: users[2]._id,
                 time_added: Date.now(),
                 contentType: 'post'
             }

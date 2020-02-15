@@ -30,7 +30,7 @@ class Register extends Component {
     .then((data) => {
       console.log(data); 
       this.props.changeLinks(true);
-      this.props.history.push('/verify');
+      this.props.history.push(`/verify/${data.userId}`);
     })
     .catch(err=>{
       this.setState({error: err.response.data});

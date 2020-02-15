@@ -44,8 +44,8 @@ class App extends React.Component{
                    render={(props)=><Register {...props} changeLinks={this.changeLinks}/>}/>
                   <Route path='/create' exact component={CreatePost}/>
                   <Route path='/' exact component={Feed}/>
-                  <Route path='/profile/:userid' exact component={Profile}/>
-                  <Route path='/verify' exact component={VerifyMessage}/>
+                  <Route path='/profile/:userId' exact component={Profile}/>
+                  <Route path='/verify/:userId' exact component={VerifyMessage}/>
               </main>
           </div>
           <Route path="/" component={Footer}/>

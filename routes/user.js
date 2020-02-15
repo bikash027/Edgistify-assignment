@@ -54,23 +54,12 @@ router.post('/register',(req,res,next)=>{
 			hash: hash,
 			random: crypto.randomBytes(10).toString("hex"),
 			verified: false
-			// image: req.file.filename
 		})
 		.then(newUser => {
-			// console.log('67',newUser.salt);
-			// console.log("user's auto-generated ID:", newUser._id);
 			authenticate(req,newUser,(err,user)=>{
 				if(user){
 					req.session.userId=user._id;
-					sendMail(user.email,user.random)
-					.then((info)=>{
-						console.log(info.response);
-						res.status(200).json({message:"successfully logged in"});
-					})
-					.catch(err=>{
-						console.log(err);
-						res.status(500).send("email not sent");
-					})
+					res.status(200).json({userId:user._id});
 				}
 				else{
 					// throw err;
@@ -177,14 +166,37 @@ router.get('/email/:random',(req,res,next)=>{
 		return user.save();
 	})
 	.then(user=>{
-		res.send(`<h3>Email verified</h3>
-		<a href='http://localhost:3000'>Home</a>`)
+		if(req.query.json)
+			res.status(200).json({message:'verified'});
+		else
+			res.send(`<h3>Email verified</h3>
+			<a href='/'>Home</a>`)
 	})
 	.catch(err=>{
 		next(err);
 	})
 })
-
+router.get('/sendMail/:id',(req,res)=>{
+	let _user='';
+	User.findOne({_id: req.params.id})
+	.then(user=>{
+		if(!user)
+			throw Error("no user with that id");
+		_user=user;
+		return sendMail(user.email,user.random) 
+	})
+	.then((info)=>{
+		console.log(info.response);
+		res.status(200).json({message:"email sent"});
+	})
+	.catch(err=>{
+		console.log(err);
+		if(_user!=='')
+			res.status(200).json({securityKey: _user.random});
+		else
+			res.status(500).send(err.message);
+	})
+})
 function authenticate(req,user,fn){
 	// console.log(req.body.password,typeof(req.body.password));
 	hash({password: req.body.password, salt: user.salt},(err, pass, salt, hash)=>{

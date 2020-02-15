@@ -41,6 +41,7 @@ class ProfilePic extends Component{
                             <input type="file" name="profile" onChange={this.onChange} className="form-control"/>
                         </div>
                         <button type="submit" className="btn btn-info btn-block">Submit</button>
+                        <p>Please refresh the page after submitting</p>
                     </form>
         return(
             <div style={style}>

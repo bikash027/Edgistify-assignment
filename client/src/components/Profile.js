@@ -12,7 +12,7 @@ class Profile extends Component{
     }
     componentDidMount(){
         const { match: { params } } = this.props;
-        getDataAxios(`/user/profile/${params.userid}`)
+        getDataAxios(`/user/profile/${params.userId}`)
         .then(data=>{
             // console.log(data);
             this.setState(data);

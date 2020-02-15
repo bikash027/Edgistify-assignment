@@ -40,8 +40,6 @@ router.get('/',(req,res)=>{
         filter.User=req.query.userId;
     Post.find(filter,null,
         {
-            skip:0, // Starting Row
-            limit:10, // Ending Row
             sort:{
                 time_added: -1 //Sort by Date Added DESC
             }
@@ -104,8 +102,6 @@ router.post('/',emailVerified,(req,res)=>{
 router.get('/comments/:id',(req,res)=>{
     Post.find({contentType:{$in:['comment','reply']}, Post: req.params.id},null,
         {
-            skip:0,
-            limit:10,
             sort:{
                 time_added: -1
             }

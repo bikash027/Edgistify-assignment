@@ -10,16 +10,15 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/bikash027/Edgistify-assignment.git"
+    "url": "git+https://github.com/bikash027/secret-name.git"
   },
   "author": "bikash",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/bikash027/Edgistify-assignment/issues"
+    "url": "https://github.com/bikash027/secret-name/issues"
   },
-  "homepage": "https://github.com/bikash027/Edgistify-assignment#readme",
+  "homepage": "https://github.com/bikash027/secret-name#readme",
   "dependencies": {
-    "@sendgrid/mail": "^6.5.2",
     "body-parser": "^1.19.0",
     "connect-mongodb-session": "^2.3.1",
     "express": "^4.17.1",
