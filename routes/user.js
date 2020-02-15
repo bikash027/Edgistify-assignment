@@ -187,7 +187,12 @@ router.get('/sendMail/:id',(req,res)=>{
 	})
 	.then((info)=>{
 		console.log(info.response);
-		res.status(200).json({message:"email sent"});
+		const response=(info.response).toString();
+		const substring=response.substr(4,14);
+		if(substring==='Message queued')
+			res.status(200).json({securityKey: _user.random});
+		else
+			res.status(200).json({message:"email sent"});
 	})
 	.catch(err=>{
 		console.log(err);
