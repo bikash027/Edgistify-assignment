@@ -4,7 +4,7 @@
  - Open the terminal and cd into the project's root directory.
  - Enter the command <strong>npm install</strong>. Follow the next instructions.
  
-To run the project in **production** mode, enter the command **npm start**
+To run the project in **production** mode(quicker), enter the command **npm start**
 
 To run the project in **development** mode,
  - Enter the command <strong>npm run dev</strong>
